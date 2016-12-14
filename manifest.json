@@ -1,0 +1,19 @@
+{
+  "manifest_version": 2,
+  "name": "FireFox Pomodoro Timer",
+  "version": "1.0",
+
+  "description": "A simple pomodoro timer",
+
+  "icons": {
+    "48": "icons/WorkTimer48.png",
+    "96": "icons/WorkTimer96.png"
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["*://*.mozilla.org/*"],
+      "js": ["work_timer.js"]
+    }
+  ]
+}
