@@ -14,3 +14,16 @@ html, body {
 .countdown:hover {
   background-color: #CFF2F2;
 }
+
+.stop {
+  margin: 3% auto;
+  padding: 4px;
+  text-align: center;
+  font-size: 1.5em;
+  background-color: #E5F2F2;
+  cursor: pointer;
+}
+
+.stop:hover {
+  background-color: #CFF2F2;
+}
