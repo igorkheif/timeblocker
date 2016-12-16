@@ -1,0 +1,69 @@
+var CONFIG = (function() {
+	var is_started;
+	var starting_time;
+	var interval_id;
+	var countdown_to_minutes = {
+		"Work" : 25,
+		"Small Break" : 5,
+		"Big Break" : 30,
+	}
+	
+	return {
+		setCountdown: function(key, value) {
+			countdown_to_minuts[key] = value;
+		},
+		getCountdown: function(key){
+			return countdown_to_minuts[key];
+		}, 
+		setIntervalID: function(id){
+			interval_id = id;
+		},
+		getIntervalID: function(){
+			return interval_id;
+		},
+		start: function(){
+			is_started = true;
+		},
+		end: function(){
+			is_started = false;
+		},
+		getIsStarted: function(){
+			return is_started;
+		},
+		setStartingTime: function(time){
+			starting_time = time;
+		},
+		getStartingTime: function(){
+			return starting_time;
+		},
+		setOriginalCountdown: function(countdown_mins){
+			original_countdown = countdown;
+		},
+		getStartingTime: function(){
+			return starting_time;
+		},
+	};
+})();
+
+function setupClock(minutes){
+	
+}
+
+document.addEventListener("click", (e) => {
+	if (e.target.classList.contains("countdown")) {
+		var chosen_countdown = e.target.textContent;
+		//var chosen_countdown_mins = COUNTDOWN_TO_MINUTES.get(chosen_countdown);
+		setupClock(CONFIG.getCountdown(chosen_countdown));
+		CONFIG.setIntervalID(setInterval(timerTick(200)));
+		CONFIG.start();
+	}
+	else if (e.target.classList.contains("clear")) {
+		if (!CONFIG.getIsStarted()) {
+			return;
+		}
+		
+		CONFIG.end();
+		clearInterval(CONFIG.getIntervalID);
+		nullifyClock();
+	}
+});

@@ -1,0 +1,22 @@
+{
+  "manifest_version": 2,
+  "name": "FireFox Pomodoro Timer",
+  "version": "0.1",
+
+  "description": "A simple work timer",
+
+  "icons": {
+    "48": "icons/WorkTimer48.png",
+    "96": "icons/WorkTimer96.png"
+  },
+
+  "permissions": [
+  
+  ],
+
+  "browser_action": {
+    "default_icon": "icons/WorkTimer32.png",
+    "default_title": "Work Timer",
+    "default_popup": "popup/timer_control.html"
+  }
+}
