@@ -7,25 +7,8 @@ var CONFIG = (function() {
 	var starting_time;
 	var interval_id;
 	var original_countdown;
-	var countdown_to_minutes = {
-		"Work": {minutes: 25, color: "red"},
-		"Small Break": {minutes: 0.05, color: "royalblue"},
-		"Big Break": {minutes: 30, color: "green"}
-	}
 
 	return {
-		setCountdown: function(key, value) {
-			countdown_to_minutes[key].minutes = value;
-		},
-		getCountdown: function(key) {
-			return countdown_to_minutes[key].minutes;
-		},
-		setCountdownColor: function(key, value) {
-			countdown_to_minutes[key].color = value;
-		},
-		getCountdownColor: function(key) {
-			return countdown_to_minutes[key].color;
-		},
 		setIntervalID: function(id) {
 			interval_id = id;
 		},
@@ -93,7 +76,7 @@ function timerTick() {
 		return;
 	}
 
-	browser.browserAction.setBadgeText({text: (remaining_time.remaining_minutes + Math.ceil(remaining_time.remaining_seconds / SEC_IN_MIN)).toString()});
+	browser.browserAction.setBadgeText({text: remaining_time.remaining_minutes.toString()});
 }
 
 function stopTimer() {
@@ -106,10 +89,9 @@ function stopTimer() {
 	browser.browserAction.setBadgeText({text: ""});
 }
 
-function setupTimer(pressed_button) {
-	browser.browserAction.setBadgeBackgroundColor({color: CONFIG.getCountdownColor(pressed_button)});
-	CONFIG.setOriginalCountdown(CONFIG.getCountdown(pressed_button));
-	window.console.log("asdfasdf");
+function setupTimer(minutes, color) {
+	browser.browserAction.setBadgeBackgroundColor({color: color});
+	CONFIG.setOriginalCountdown(minutes);
 	CONFIG.setStartingTime(Date.now());
 	CONFIG.start();
 	timerTick();
@@ -117,11 +99,9 @@ function setupTimer(pressed_button) {
 }
 
 function handleMessage(request, sender, sendResponse) {
-			window.console.log("asdfasdf");
 	switch(request.type) {
 		case "start":
-			window.console.log("asdfasdf");
-			setupTimer(request.pressed_button);
+			setupTimer(request.minutes, request.color);
 			break;
 		case "stop":
 			stopTimer();
@@ -144,4 +124,3 @@ function handleMessage(request, sender, sendResponse) {
 }
 
 browser.runtime.onMessage.addListener(handleMessage);
-window.console.log("asdfasdf");
