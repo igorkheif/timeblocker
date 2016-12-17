@@ -8,17 +8,23 @@ var CONFIG = (function() {
 	var interval_id;
 	var original_countdown;
 	var countdown_to_minutes = {
-		"Work": 25,
-		"Small Break": 0.1,
-		"Big Break": 30,
+		"Work": {minutes: 25, color: "red"},
+		"Small Break": {minutes: 0.05, color: "royalblue"},
+		"Big Break": {minutes: 30, color: "green"}
 	}
 
 	return {
 		setCountdown: function(key, value) {
-			countdown_to_minutes[key] = value;
+			countdown_to_minutes[key].minutes = value;
 		},
 		getCountdown: function(key) {
-			return countdown_to_minutes[key];
+			return countdown_to_minutes[key].minutes;
+		},
+		setCountdownColor: function(key, value) {
+			countdown_to_minutes[key].color = value;
+		},
+		getCountdownColor: function(key) {
+			return countdown_to_minutes[key].color;
 		},
 		setIntervalID: function(id) {
 			interval_id = id;
@@ -84,7 +90,10 @@ function timerTick() {
 		var audio = new Audio('sounds/ding.mp3'); 
 		audio.play(); 
 		stopTimer();
+		return;
 	}
+
+	browser.browserAction.setBadgeText({text: (remaining_time.remaining_minutes + Math.ceil(remaining_time.remaining_seconds / SEC_IN_MIN)).toString()});
 }
 
 function stopTimer() {
@@ -94,13 +103,16 @@ function stopTimer() {
 	}
 	clearInterval(CONFIG.getIntervalID());
 	CONFIG.stop();
+	browser.browserAction.setBadgeText({text: ""});
 }
 
 function setupTimer(pressed_button) {
+	browser.browserAction.setBadgeBackgroundColor({color: CONFIG.getCountdownColor(pressed_button)});
 	CONFIG.setOriginalCountdown(CONFIG.getCountdown(pressed_button));
 	window.console.log("asdfasdf");
 	CONFIG.setStartingTime(Date.now());
 	CONFIG.start();
+	timerTick();
 	CONFIG.setIntervalID(setInterval(timerTick, 50));
 }
 
@@ -126,8 +138,7 @@ function handleMessage(request, sender, sendResponse) {
 
 			sendResponse({minutes : mins, seconds : secs});
 			break;
-		// Should never happen
-		default:
+		default:	// Should never happen
 			break;
 	}
 }
