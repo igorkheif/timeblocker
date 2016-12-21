@@ -47,11 +47,7 @@ var CONFIG = (function() {
 			return original_countdown;
 		},
 		updateConfig: function(new_config) {
-			if (Object.keys(new_config).length === 0) {
-				return;
-			}
-
-			config = new_config["new_config"];
+			config = new_config;
 		},
 		getSession: function(key){
 			return config.sessions[key];
@@ -150,6 +146,17 @@ function handleMessage(request, sender, sendResponse) {
 	}
 }
 
+console.log("sup");
 browser.storage.local.clear();
-gettingTimes.then(CONFIG.updateConfig, function (error){return;});
+var gettingTimes = browser.storage.local.get("new_config"); 
+gettingTimes.then(
+		function (new_config){
+			console.log("sup");
+			if (Object.keys(new_config).length !== 0) {
+				CONFIG.updateConfig(new_config["new_config"]);
+			}
+		}, 
+		function (error){
+			return;
+		});
 browser.runtime.onMessage.addListener(handleMessage);

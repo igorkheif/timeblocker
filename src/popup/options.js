@@ -9,7 +9,7 @@ var config = {
 
 function updateConfigFromHtml() {
 		for (key in config.sessions){
-			config.sessions[key] = document.getElementById(key).value;
+			config.sessions[key].minutes = document.getElementById(key).value;
 		}
 
 		switch (document.getElementById("play_sound").value){
@@ -26,7 +26,7 @@ function updateConfigFromHtml() {
 
 function updateHtmlFromConfig() {
 		for (key in config.sessions){
-			document.getElementById(key).value = config.sessions[key];
+			document.getElementById(key).value = config.sessions[key].minutes;
 		}
 
 		switch (config.shold_play_sound){
