@@ -47,7 +47,7 @@ var CONFIG = (function() {
 			return original_countdown;
 		},
 		updateConfig: function(new_config) {
-			if (Object.keys(config).length === 0) {
+			if (Object.keys(new_config).length === 0) {
 				console.log("Empty config, not updating config");
 				return;
 			}

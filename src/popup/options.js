@@ -43,7 +43,9 @@ gettingTimes.then(updateHtmlAndConfig, function (error){updateHtmlFromConfig()})
 window.onload=function() {
 	document.getElementById('options_form').onsubmit=function() {
 		updateConfigFromHtml();
-		browser.storage.local.set({new_config: config});
+
+		var new_config = config;
+		browser.storage.local.set({new_config: new_config});
 		sendConfigToBackground();
 		return false;
 	}
