@@ -50,7 +50,6 @@ var CONFIG = (function() {
 			config = new_config;
 		},
 		shouldPlaySound: function() {
-			console.log(config.should_play_sound);
 			return config.should_play_sound;
 		},
 		getSession: function(key){
