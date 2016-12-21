@@ -22,5 +22,32 @@
     "default_icon": "icons/WorkTimer32.png",
     "default_title": "Work Timer",
     "default_popup": "popup/timer_control.html"
+  },
+
+  "commands": {
+	  "work": {
+		  "suggested_key": {
+			  "default": "Alt+Shift+W"
+		  },
+		  "description": "Starts a work session"
+	  },
+	  "small_break": {
+		  "suggested_key": {
+			  "default": "Alt+Shift+V"
+		  },
+		  "description": "Starts a small break session"
+	  },
+	  "big_break": {
+		  "suggested_key": {
+			  "default": "Alt+Shift+B"
+		  },
+		  "description": "Starts a big break session"
+	  },
+	  "stop": {
+		  "suggested_key": {
+			  "default": "Alt+Shift+S"
+		  },
+		  "description": "Stops the current session"
+	  }
   }
 }
