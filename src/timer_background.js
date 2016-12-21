@@ -8,6 +8,16 @@ var CONFIG = (function() {
 	var interval_id;
 	var original_countdown;
 
+	// TODO: Make this importable instead of a copy of options.js's one.
+	var config = {
+		sessions: {
+			work: {minutes: 25, color: "maroon"},
+			small_break: {minutes: 0.05, color: "royalblue"},
+			big_break: {minutes: 30, color: "green"}
+		},
+		should_play_sound: true,
+	};
+
 	return {
 		setIntervalID: function(id) {
 			interval_id = id;
@@ -36,6 +46,18 @@ var CONFIG = (function() {
 		getOriginalCountdown: function() {
 			return original_countdown;
 		},
+		updateConfig: function(new_config) {
+			if (Object.keys(config).length === 0) {
+				console.log("Empty config, not updating config");
+				return;
+			}
+
+			console.log("Updating config");
+			config = new_config;
+		},
+		getSession: function(key){
+			return config.sessions[key];
+		}
 	};
 })();
 
@@ -89,19 +111,26 @@ function stopTimer() {
 	browser.browserAction.setBadgeText({text: ""});
 }
 
-function setupTimer(minutes, color) {
-	browser.browserAction.setBadgeBackgroundColor({color: color});
-	CONFIG.setOriginalCountdown(minutes);
+function setupTimer(session_type) {
+	relevant_session = CONFIG.getSession(session_type);
+	console.log(relevant_session.color);
+	browser.browserAction.setBadgeBackgroundColor({color: relevant_session.color});
+	CONFIG.setOriginalCountdown(relevant_session.minutes);
 	CONFIG.setStartingTime(Date.now());
 	CONFIG.start();
 	timerTick();
+	// TODO: Find a better time interval, here in everywhere
 	CONFIG.setIntervalID(setInterval(timerTick, 50));
 }
 
 function handleMessage(request, sender, sendResponse) {
 	switch(request.type) {
+		case "update-config":
+			CONFIG.updateConfig(request.config);
+			break;
 		case "start":
-			setupTimer(request.minutes, request.color);
+			console.log("session_type: " + request.session_type);
+			setupTimer(request.session_type);
 			break;
 		case "stop":
 			stopTimer();
@@ -123,4 +152,6 @@ function handleMessage(request, sender, sendResponse) {
 	}
 }
 
+//var gettingTimes = browser.storage.local.get("new_config");
+//gettingTimes.then(CONFIG.updateConfig, function (error){return;});
 browser.runtime.onMessage.addListener(handleMessage);
