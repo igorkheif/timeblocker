@@ -49,6 +49,9 @@ var CONFIG = (function() {
 		updateConfig: function(new_config) {
 			config = new_config;
 		},
+		shouldPlaySound: function() {
+			return config.should_play_sound;
+		},
 		getSession: function(key){
 			return config.sessions[key];
 		}
@@ -86,8 +89,11 @@ function timerTick() {
 
 	var remaining_time = new getRemainingTime();
 	if ((remaining_time.remaining_minutes == 0) && (remaining_time.remaining_seconds == 0)) {
-		var audio = new Audio('sounds/ding.mp3'); 
-		audio.play(); 
+		if (CONFIG.shouldPlaySound()) {
+			var audio = new Audio('sounds/ding.mp3'); 
+			audio.play(); 
+		}
+
 		stopTimer();
 		return;
 	}
@@ -105,7 +111,7 @@ function stopTimer() {
 	browser.browserAction.setBadgeText({text: ""});
 }
 
-function setupTimer(session_type) {
+function startTimer(session_type) {
 	relevant_session = CONFIG.getSession(session_type);
 	browser.browserAction.setBadgeBackgroundColor({color: relevant_session.color});
 	CONFIG.setOriginalCountdown(relevant_session.minutes);
@@ -119,12 +125,10 @@ function setupTimer(session_type) {
 function handleMessage(request, sender, sendResponse) {
 	switch(request.type) {
 		case "update-config":
-			console.log("Updating config");
-			console.log(JSON.stringify(request.config));
 			CONFIG.updateConfig(request.config);
 			break;
 		case "start":
-			setupTimer(request.session_type);
+			startTimer(request.session_type);
 			break;
 		case "stop":
 			stopTimer();
@@ -146,12 +150,9 @@ function handleMessage(request, sender, sendResponse) {
 	}
 }
 
-console.log("sup");
-browser.storage.local.clear();
 var gettingTimes = browser.storage.local.get("new_config"); 
 gettingTimes.then(
 		function (new_config){
-			console.log("sup");
 			if (Object.keys(new_config).length !== 0) {
 				CONFIG.updateConfig(new_config["new_config"]);
 			}

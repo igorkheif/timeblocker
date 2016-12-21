@@ -12,16 +12,7 @@ function updateConfigFromHtml() {
 			config.sessions[key].minutes = document.getElementById(key).value;
 		}
 
-		switch (document.getElementById("play_sound").value){
-			case "on":
-				config.should_play_sound = true;
-				break;
-			case "off":
-				config.should_play_sound = false;
-				break;
-			default: // Should never get here
-				break;
-		}
+		config.should_play_sound = document.getElementById("play_sound").checked;
 }
 
 function updateHtmlFromConfig() {
@@ -29,16 +20,7 @@ function updateHtmlFromConfig() {
 			document.getElementById(key).value = config.sessions[key].minutes;
 		}
 
-		switch (config.shold_play_sound){
-			case true:
-				document.getElementById("play_sound").value = "on";
-				break;
-			case false:
-				document.getElementById("play_sound").value = "off";
-				break;
-			default: // Should never get here
-				break;
-		}
+		document.getElementById("play_sound").checked =	config.should_play_sound;
 }
 
 function updateHtmlAndConfig(conf_obj) {
@@ -46,7 +28,6 @@ function updateHtmlAndConfig(conf_obj) {
 		return;
 	}
 
-	console.log(JSON.stringify(conf_obj["new_config"]));
 	config = conf_obj["new_config"];
 	updateHtmlFromConfig();
 }
