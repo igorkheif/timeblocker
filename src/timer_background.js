@@ -160,4 +160,15 @@ gettingTimes.then(
 		function (error){
 			return;
 		});
+
 browser.runtime.onMessage.addListener(handleMessage);
+
+browser.commands.onCommand.addListener(function(command) {
+	console.log("Got command: " + command);
+	if (command == "stop") {
+		stopTimer();
+		return;
+	}
+
+	startTimer(command);
+});
