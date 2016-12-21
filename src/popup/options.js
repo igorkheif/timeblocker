@@ -12,7 +12,16 @@ function updateConfigFromHtml() {
 			config.sessions[key] = document.getElementById(key).value;
 		}
 
-		config.should_play_sound = document.getElementById("should_play_sound").value;
+		switch (document.getElementById("play_sound").value){
+			case "on":
+				config.should_play_sound = true;
+				break;
+			case "off":
+				config.should_play_sound = false;
+				break;
+			default: // Should never get here
+				break;
+		}
 }
 
 function updateHtmlFromConfig() {
@@ -20,11 +29,25 @@ function updateHtmlFromConfig() {
 			document.getElementById(key).value = config.sessions[key];
 		}
 
-		document.getElementById("should_play_sound").value = config.should_play_sound; 
+		switch (config.shold_play_sound){
+			case true:
+				document.getElementById("play_sound").value = "on";
+				break;
+			case false:
+				document.getElementById("play_sound").value = "off";
+				break;
+			default: // Should never get here
+				break;
+		}
 }
 
 function updateHtmlAndConfig(conf_obj) {
-	config = obj;
+	if (Object.keys(conf_obj).length === 0) {
+		return;
+	}
+
+	console.log(JSON.stringify(conf_obj["new_config"]));
+	config = conf_obj["new_config"];
 	updateHtmlFromConfig();
 }
 
@@ -40,13 +63,12 @@ var gettingTimes = browser.storage.local.get("new_config");
 gettingTimes.then(updateHtmlAndConfig, function (error){updateHtmlFromConfig()});
 
 // When the user submits the options form, we update our config and save it to storage
-window.onload=function() {
-	document.getElementById('options_form').onsubmit=function() {
-		updateConfigFromHtml();
 
-		var new_config = config;
-		browser.storage.local.set({new_config: new_config});
-		sendConfigToBackground();
-		return false;
-	}
+document.getElementById("options_form").onsubmit=function() {
+	updateConfigFromHtml();
+
+	var new_config = config;
+	browser.storage.local.set({new_config: new_config});
+	sendConfigToBackground();
+	return false;
 }

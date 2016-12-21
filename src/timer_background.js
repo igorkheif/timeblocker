@@ -48,12 +48,10 @@ var CONFIG = (function() {
 		},
 		updateConfig: function(new_config) {
 			if (Object.keys(new_config).length === 0) {
-				console.log("Empty config, not updating config");
 				return;
 			}
 
-			console.log("Updating config");
-			config = new_config;
+			config = new_config["new_config"];
 		},
 		getSession: function(key){
 			return config.sessions[key];
@@ -113,7 +111,6 @@ function stopTimer() {
 
 function setupTimer(session_type) {
 	relevant_session = CONFIG.getSession(session_type);
-	console.log(relevant_session.color);
 	browser.browserAction.setBadgeBackgroundColor({color: relevant_session.color});
 	CONFIG.setOriginalCountdown(relevant_session.minutes);
 	CONFIG.setStartingTime(Date.now());
@@ -126,10 +123,11 @@ function setupTimer(session_type) {
 function handleMessage(request, sender, sendResponse) {
 	switch(request.type) {
 		case "update-config":
+			console.log("Updating config");
+			console.log(JSON.stringify(request.config));
 			CONFIG.updateConfig(request.config);
 			break;
 		case "start":
-			console.log("session_type: " + request.session_type);
 			setupTimer(request.session_type);
 			break;
 		case "stop":
@@ -152,6 +150,6 @@ function handleMessage(request, sender, sendResponse) {
 	}
 }
 
-//var gettingTimes = browser.storage.local.get("new_config");
-//gettingTimes.then(CONFIG.updateConfig, function (error){return;});
+browser.storage.local.clear();
+gettingTimes.then(CONFIG.updateConfig, function (error){return;});
 browser.runtime.onMessage.addListener(handleMessage);
