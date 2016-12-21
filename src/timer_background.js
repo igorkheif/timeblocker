@@ -8,6 +8,16 @@ var CONFIG = (function() {
 	var interval_id;
 	var original_countdown;
 
+	// TODO: Make this importable instead of a copy of options.js's one.
+	var config = {
+		sessions: {
+			work: {minutes: 25, color: "maroon"},
+			small_break: {minutes: 0.05, color: "royalblue"},
+			big_break: {minutes: 30, color: "green"}
+		},
+		should_play_sound: true,
+	};
+
 	return {
 		setIntervalID: function(id) {
 			interval_id = id;
@@ -36,6 +46,12 @@ var CONFIG = (function() {
 		getOriginalCountdown: function() {
 			return original_countdown;
 		},
+		updateConfig: function(new_config) {
+			config = new_config;
+		},
+		getSession: function(key){
+			return config.sessions[key];
+		}
 	};
 })();
 
@@ -89,19 +105,26 @@ function stopTimer() {
 	browser.browserAction.setBadgeText({text: ""});
 }
 
-function setupTimer(minutes, color) {
-	browser.browserAction.setBadgeBackgroundColor({color: color});
-	CONFIG.setOriginalCountdown(minutes);
+function setupTimer(session_type) {
+	relevant_session = CONFIG.getSession(session_type);
+	browser.browserAction.setBadgeBackgroundColor({color: relevant_session.color});
+	CONFIG.setOriginalCountdown(relevant_session.minutes);
 	CONFIG.setStartingTime(Date.now());
 	CONFIG.start();
 	timerTick();
+	// TODO: Find a better time interval, here in everywhere
 	CONFIG.setIntervalID(setInterval(timerTick, 50));
 }
 
 function handleMessage(request, sender, sendResponse) {
 	switch(request.type) {
+		case "update-config":
+			console.log("Updating config");
+			console.log(JSON.stringify(request.config));
+			CONFIG.updateConfig(request.config);
+			break;
 		case "start":
-			setupTimer(request.minutes, request.color);
+			setupTimer(request.session_type);
 			break;
 		case "stop":
 			stopTimer();
@@ -123,4 +146,17 @@ function handleMessage(request, sender, sendResponse) {
 	}
 }
 
+console.log("sup");
+browser.storage.local.clear();
+var gettingTimes = browser.storage.local.get("new_config"); 
+gettingTimes.then(
+		function (new_config){
+			console.log("sup");
+			if (Object.keys(new_config).length !== 0) {
+				CONFIG.updateConfig(new_config["new_config"]);
+			}
+		}, 
+		function (error){
+			return;
+		});
 browser.runtime.onMessage.addListener(handleMessage);
