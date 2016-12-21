@@ -111,7 +111,7 @@ function stopTimer() {
 	browser.browserAction.setBadgeText({text: ""});
 }
 
-function setupTimer(session_type) {
+function startTimer(session_type) {
 	relevant_session = CONFIG.getSession(session_type);
 	browser.browserAction.setBadgeBackgroundColor({color: relevant_session.color});
 	CONFIG.setOriginalCountdown(relevant_session.minutes);
@@ -128,7 +128,7 @@ function handleMessage(request, sender, sendResponse) {
 			CONFIG.updateConfig(request.config);
 			break;
 		case "start":
-			setupTimer(request.session_type);
+			startTimer(request.session_type);
 			break;
 		case "stop":
 			stopTimer();
