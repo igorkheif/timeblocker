@@ -5,6 +5,7 @@ var config = {
 		big_break: {minutes: 30, color: "green"}
 	},
 	should_play_sound: true,
+	should_continue_to_small_break: true
 }
 
 function updateConfigFromHtml() {
@@ -13,6 +14,7 @@ function updateConfigFromHtml() {
 		}
 
 		config.should_play_sound = document.getElementById("play_sound").checked;
+		config.should_continue_to_small_break = document.getElementById("autocontinue").checked;
 }
 
 function updateHtmlFromConfig() {
@@ -21,6 +23,7 @@ function updateHtmlFromConfig() {
 		}
 
 		document.getElementById("play_sound").checked =	config.should_play_sound;
+		document.getElementById("autocontinue").checked = config.should_continue_to_small_break;
 }
 
 function updateHtmlAndConfig(conf_obj) {
