@@ -127,7 +127,19 @@ function stopTimer(forced_stop) {
 	}
 
 	CONFIG.stop();
+
+	
 	browser.browserAction.setBadgeText({text: ""});
+
+	console.log("getting current tab");
+	//var executing = browser.tabs.executeScript(null, { file: "/overlay.js" });
+	var executing = browser.tabs.executeScript(null, {file: "/overlay.js"});
+	executing.then(function (res){console.log("started overlay.js");}, function (err){console.log("haven't started, error: " + err);});
+	console.log("sending message");
+	browser.runtime.sendMessage({
+		type: "overlay",
+		overlay_text: "SUUUUUUUUUUUUP"
+	});
 }
 
 function startTimer(session_type) {
@@ -165,7 +177,7 @@ function handleMessage(request, sender, sendResponse) {
 
 			sendResponse({minutes : mins, seconds : secs});
 			break;
-		default:	// Should never happen
+		default:	// Message is not for us
 			break;
 	}
 }
@@ -184,7 +196,6 @@ gettingTimes.then(
 browser.runtime.onMessage.addListener(handleMessage);
 
 browser.commands.onCommand.addListener(function(command) {
-	console.log("Got command: " + command);
 	if (command == "stop") {
 		stopTimer(true);
 		return;
