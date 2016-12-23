@@ -133,8 +133,8 @@ function stopTimer(forced_stop) {
 
 	console.log("getting current tab");
 	//var executing = browser.tabs.executeScript(null, { file: "/overlay.js" });
-	var executing = browser.tabs.executeScript(null, {file: "/overlay.js"});
-	executing.then(function (res){console.log("started overlay.js");}, function (err){console.log("haven't started, error: " + err);});
+	var executing = browser.tabs.executeScript(null, {file: "/content_scripts/overlay.js"});
+	executing.then(function (res){console.log("started overlay.js: " + res);}, function (err){console.log("haven't started, error: " + err);});
 	console.log("sending message");
 	browser.runtime.sendMessage({
 		type: "overlay",
