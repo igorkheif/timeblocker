@@ -23,8 +23,6 @@ function getUpdate(){
 }
 
 document.addEventListener("click", (e) => {
-	//window.alert("sometext");
-
 	if (e.target.classList.contains("countdown")) {
 		var chosen_countdown = e.target.textContent.toLowerCase().replace(" ", "_");
 		browser.runtime.sendMessage({

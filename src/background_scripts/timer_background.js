@@ -1,4 +1,3 @@
-console.log("1");
 const MS_IN_SEC = 1000;
 const MS_IN_MIN = 60000;
 const SEC_IN_MIN = 60;
@@ -164,7 +163,6 @@ function stopTimer(forced_stop) {
 		executingScript.then(
 				function (){
 					var session_type_printable = CONFIG.getOriginalSessionType().toString().replace('_', ' ');
-					console.log("ShouldPopup");
 					sendContentScriptMessage("The " + session_type_printable + " session has ended.");
 				}, 
 				function (err){
@@ -212,7 +210,7 @@ function handleMessage(request, sender, sendResponse) {
 			break;
 	}
 }
-console.log("2");
+
 var gettingTimes = browser.storage.local.get("new_config"); 
 gettingTimes.then(
 		function (new_config){

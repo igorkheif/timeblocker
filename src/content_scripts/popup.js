@@ -1,8 +1,9 @@
 // TODO: Make sure this only runs once, even after X breaks
-browser.runtime.onMessage.addListener(
-		function(request, sender, sendResponse) {
-			if (request.type == "overlay") {
-				OVERLAY.turnOverlayOn(request.overlay_text);
-			}
-		}
-);
+function popupAndRemove(request, sender, sendResponse) {
+	if (request.type == "popup") {
+		alert(request.popup_text);
+		browser.runtime.onMessage.removeListener(popupAndRemove);
+	}
+}
+
+browser.runtime.onMessage.addListener(popupAndRemove);
