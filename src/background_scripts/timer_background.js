@@ -2,14 +2,21 @@ const MS_IN_SEC = 1000;
 const MS_IN_MIN = 60000;
 const SEC_IN_MIN = 60;
 
+// This is the state holder, it exports some getters and setters.
 var STATE = (function() {
+	// Is the timer currently running
 	var is_started;
+	// What time did the timer start
 	var starting_time;
+	// The ID of the timerTick, so we know to turn if off when necessary
 	var interval_id;
+	// The original amount of time we're counting down from
 	var original_countdown;
+	// The current session type as a string (work, small_break or big_break)
 	var original_session_type;
 
-	// TODO: Make this importable instead of a copy of options.js's one.
+	// The config. Holds the user defined things (mostly) such as times for different blocks
+	// and whether or not show a popup/play sound upon completion
 	var config = {
 		sessions: {
 			work: {minutes: 25, color: "maroon"},
@@ -21,6 +28,7 @@ var STATE = (function() {
 		should_popup: true
 	};
 
+	// The "exports"
 	return {
 		setIntervalID: function(id) {
 			interval_id = id;
@@ -74,6 +82,7 @@ var STATE = (function() {
 	};
 })();
 
+// Returns the remaining time in the countdown in minutes and seconds
 function getRemainingTime (){
 	var diff_ms = Date.now() - STATE.getStartingTime();
 	var remaining_ms = STATE.getOriginalCountdown() * MS_IN_MIN - diff_ms;
@@ -96,6 +105,7 @@ function getRemainingTime (){
 	};
 }
 
+// This function tests whether or not the countdown has ended
 function timerTick() {
 	// We're not supposed to run
 	if (!STATE.getIsStarted()) {
@@ -105,6 +115,7 @@ function timerTick() {
 
 	var remaining_time = new getRemainingTime();
 	if ((remaining_time.remaining_minutes == 0) && (remaining_time.remaining_seconds == 0)) {
+		// TODO: Move this one to stopTimer, but it's fine here and it works (even simplifies the code)
 		if (STATE.shouldPlaySound()) {
 			var audio = new Audio('sounds/ding.mp3'); 
 			audio.play(); 
@@ -117,7 +128,9 @@ function timerTick() {
 	browser.browserAction.setBadgeText({text: remaining_time.remaining_minutes.toString()});
 }
 
+// Part of the process of sending the message to the popup script
 function sendMessageToTabs(tabs, message) {
+	// Going over the found active tabs and sending them the message
 	for (let tab of tabs) {
 		browser.tabs.sendMessage(
 				tab.id,
@@ -128,7 +141,9 @@ function sendMessageToTabs(tabs, message) {
 	};
 }
 
+// Part of the process of sending the message to the popup script
 function sendContentScriptMessage(message) {
+	// Getting the active tab for the popup
 	var querying = browser.tabs.query({
 		currentWindow: true,
 		active: true
@@ -141,13 +156,15 @@ function sendContentScriptMessage(message) {
 	);
 }
 
-function stopTimer(forced_stop) {
+function stopTimer(is_forced_stop) {
 	if (!STATE.getIsStarted()) {
 
 		return;
 	}
 
-	if (STATE.shouldPopup()){
+	// If we should show a popup upon stopping (and the user hasn't stopped us himself), 
+	// we're starting the popup.js script and sending it a message with the text to print
+	if ((STATE.shouldPopup()) && (!is_forced_stop)){
 		var session_type_printable = STATE.getOriginalSessionType().toString().replace('_', ' ');
 		var executingScript = browser.tabs.executeScript(null, {file: "/content_scripts/popup.js"});
 		executingScript.then(
@@ -159,9 +176,11 @@ function stopTimer(forced_stop) {
 				});
 	}
 
+	// Clearing the interval so we don't call timerTick from now on
 	clearInterval(STATE.getIntervalID());
 
-	if ((!forced_stop) && (STATE.shouldContinueToSmallBreak())){
+	// We don't start the small break timer if the user pressed the stop button, or we're not ment to
+	if ((!is_forced_stop) && (STATE.shouldContinueToSmallBreak())){
 		startTimer("small_break");
 	}
 	else {
@@ -172,17 +191,21 @@ function stopTimer(forced_stop) {
 }
 
 function startTimer(session_type) {
+	// Saving many things in the state, setting the badge's color
 	relevant_session = STATE.getSession(session_type);
 	browser.browserAction.setBadgeBackgroundColor({color: relevant_session.color});
 	STATE.setOriginalSessionType(session_type);
 	STATE.setOriginalCountdown(relevant_session.minutes);
 	STATE.setStartingTime(Date.now());
 	STATE.start();
+	
+	// This is the countdown part. 
 	timerTick();
-	// TODO: Find a better time interval, here in everywhere
+	// Setting the interval time for testing whether or not we're done (10 times a second)
 	STATE.setIntervalID(setInterval(timerTick, 100));
 }
 
+// Handles the received messages, whether it's from the options page or the controller
 function handleMessage(request, sender, sendResponse) {
 	switch(request.type) {
 		case "update-config":
@@ -194,6 +217,7 @@ function handleMessage(request, sender, sendResponse) {
 		case "stop":
 			stopTimer(true);
 			break;
+		// This is the time control requesting to know how much time is left to show it to the user
 		case "update-request":
 			var mins = 0;
 			var secs = 0;
@@ -211,6 +235,7 @@ function handleMessage(request, sender, sendResponse) {
 	}
 }
 
+// Trying to get the configuration from the storage. If it's there, good, if not, we'll use the default.
 var gettingTimes = browser.storage.local.get("new_config"); 
 gettingTimes.then(
 		function (new_config){
@@ -224,6 +249,8 @@ gettingTimes.then(
 
 browser.runtime.onMessage.addListener(handleMessage);
 
+// If the user sends a command using the keyboard (more on that in the manifest file under commands)
+// we either stop the timer, or start it with the requested preset
 browser.commands.onCommand.addListener(function(command) {
 	if (command == "stop") {
 		stopTimer(true);

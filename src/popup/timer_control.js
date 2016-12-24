@@ -1,7 +1,4 @@
-const WORK_KEY = "work";
-const SMALL_BREAK_KEY = "small_break";
-const BIG_BREAK_KEY = "big_break";
-
+// Adds a "0" to a digit so it'll look prettier if it's a single digit
 function indentTime(i) {
 	if (i < 10) {
 		i = "0" + i
@@ -9,10 +6,12 @@ function indentTime(i) {
 	return i;
 }
 
+// Prints the newly acquired time left from the background script 
 function processUpdate(update){
 	document.getElementById('clock').innerHTML = indentTime(update.minutes) + ":" + indentTime(update.seconds);
 }
 
+// Requests an update from the background script to display to the user
 function getUpdate(){
 
 	var sending = browser.runtime.sendMessage({
@@ -22,6 +21,7 @@ function getUpdate(){
 	sending.then(processUpdate, function (error){return;});  
 }
 
+// Processes the button clicks of the user
 document.addEventListener("click", (e) => {
 	if (e.target.classList.contains("countdown")) {
 		var chosen_countdown = e.target.textContent.toLowerCase().replace(" ", "_");
@@ -36,7 +36,7 @@ document.addEventListener("click", (e) => {
 	}
 });
 
-// Getting updates (the time to show the user mostly) from the background JS.
+// Getting updates (the time to show the user) from the background JS.
 getUpdate();
 
 setInterval(getUpdate, 120);
