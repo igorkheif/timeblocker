@@ -71,9 +71,6 @@ var CONFIG = (function() {
 		},
 		getSession: function(key){
 			return config.sessions[key];
-		},
-		getSessionType: function(){
-			return session_type;
 		}
 	};
 })();
@@ -121,13 +118,13 @@ function timerTick() {
 	browser.browserAction.setBadgeText({text: remaining_time.remaining_minutes.toString()});
 }
 
-function sendMessageToTabs(tabs) {
+function sendMessageToTabs(tabs, message) {
 	for (let tab of tabs) {
 		browser.tabs.sendMessage(
 				tab.id,
 				{
-					type: "overlay", 
-					overlay_text: "Hi from background script"
+					type: "popup", 
+					popup_text: message
 				});
 	};
 }
@@ -137,7 +134,12 @@ function sendContentScriptMessage(message) {
 		currentWindow: true,
 		active: true
 	});
-	querying.then(sendMessageToTabs, function (error){return;});
+	querying.then(
+			function (tabs) {
+				sendMessageToTabs(tabs, message);
+			}, 
+			function (error){return;}
+	);
 }
 
 function stopTimer(forced_stop) {
@@ -158,10 +160,11 @@ function stopTimer(forced_stop) {
 
 	if (CONFIG.shouldPopup()){
 		// TODO: Change overlay.js to popup.js
-		var executing = browser.tabs.executeScript(null, {file: "/content_scripts/overlay.js"});
-		executing.then(
-				var session_type_printable = CONFIG.getSessionType().toString().replace('_', ' ');
+		var executingScript = browser.tabs.executeScript(null, {file: "/content_scripts/popup.js"});
+		executingScript.then(
 				function (){
+					var session_type_printable = CONFIG.getOriginalSessionType().toString().replace('_', ' ');
+					console.log("ShouldPopup");
 					sendContentScriptMessage("The " + session_type_printable + " session has ended.");
 				}, 
 				function (err){
@@ -209,7 +212,7 @@ function handleMessage(request, sender, sendResponse) {
 			break;
 	}
 }
-
+console.log("2");
 var gettingTimes = browser.storage.local.get("new_config"); 
 gettingTimes.then(
 		function (new_config){

@@ -32,8 +32,6 @@ document.addEventListener("click", (e) => {
 			session_type: chosen_countdown
 		});
 	} else if (e.target.classList.contains("stop")) {
-		var executing = browser.tabs.executeScript(null, {file: "/content_scripts/overlay.js"});
-		executing.then(function (res){console.log("started overlay.js: " + res);}, function (err){console.log("haven't started, error: " + err);});
 		browser.runtime.sendMessage({
 			type: "stop"
 		});
