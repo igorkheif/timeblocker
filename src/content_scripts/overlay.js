@@ -1,6 +1,8 @@
-console.log("0");
+//alert("0");
+//alert("0");
+
 var OVERLAY = (function() {
-	console.log("1");
+	//alert("1");
 	const click_anywhere_note = "(click anywhere to exit)"
 	var is_on = false;
 
@@ -25,6 +27,7 @@ var OVERLAY = (function() {
 
 	overlay_bg.append(overlay_text);
 
+	//alert("2");
 	return {
 		turnOverlayOn: function(overlay_text) {
 			if (is_on) {
@@ -32,9 +35,9 @@ var OVERLAY = (function() {
 			}
 
 			document.body.append(overlay_bg);
-			var full_overlay_text = String.format("<h1>{0}</h1><br /><h3>{1}</h3>", 
-					overlay_text, click_anywhere_note);
+			var full_overlay_text = String.format("<h1>" + overlay_text + "</h1><br /><h3>" + click_anywhere_note + " </h3>");
 			document.getElementById("timeBlockerOverlay").innerHTML = fullOverlayText;
+			//alert("overlay on");
 			is_on = true;
 		},
 		turnOverlayOff: function() {
@@ -48,11 +51,11 @@ var OVERLAY = (function() {
 		}
 	};
 })();
-console.log("Running");
+//alert("Running");
+
 browser.runtime.onMessage.addListener(
 		function(request, sender, sendResponse) {
 			if (request.type == "overlay") {
-				console.log("got overlay request");
 				OVERLAY.turnOverlayOn(request.overlay_text);
 			}
 		});
@@ -60,4 +63,4 @@ browser.runtime.onMessage.addListener(
 document.addEventListener("click", (e) => {
 	OVERLAY.turnOverlayOff();
 });
-console.log("Still running");
+//alert("Still running");

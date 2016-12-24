@@ -113,6 +113,28 @@ function timerTick() {
 	browser.browserAction.setBadgeText({text: remaining_time.remaining_minutes.toString()});
 }
 
+function sendMessageToTabs(tabs) {
+	for (let tab of tabs) {
+		browser.tabs.sendMessage(
+				tab.id,
+				{
+					type: "overlay", 
+					overlay_text: "Hi from background script"
+				}
+				).then(response => {
+			console.log("Message from the content script:");
+			console.log(response.response);
+		}).catch(onError);
+	}
+}
+
+function sendContentScriptMessage(message) {
+	browser.tabs.query({
+		currentWindow: true,
+		active: true
+	}).then(sendMessageToTabs).catch(onError);
+}
+
 function stopTimer(forced_stop) {
 	if (!CONFIG.getIsStarted()) {
 
@@ -134,12 +156,18 @@ function stopTimer(forced_stop) {
 	console.log("getting current tab");
 	//var executing = browser.tabs.executeScript(null, { file: "/overlay.js" });
 	var executing = browser.tabs.executeScript(null, {file: "/content_scripts/overlay.js"});
-	executing.then(function (res){console.log("started overlay.js: " + res);}, function (err){console.log("haven't started, error: " + err);});
-	console.log("sending message");
-	browser.runtime.sendMessage({
-		type: "overlay",
-		overlay_text: "SUUUUUUUUUUUUP"
-	});
+	executing.then(
+			function (res){
+				console.log("started overlay.js: " + res);
+				console.log("sending message");
+
+
+				sendContentScriptMessage("SUUUUUUUUUUUP");
+
+				console.log("done");
+			}, function (err){
+				console.log("haven't started, error: " + err);
+			});
 }
 
 function startTimer(session_type) {
