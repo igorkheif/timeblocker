@@ -2,7 +2,7 @@ const MS_IN_SEC = 1000;
 const MS_IN_MIN = 60000;
 const SEC_IN_MIN = 60;
 
-var CONFIG = (function() {
+var STATE = (function() {
 	var is_started;
 	var starting_time;
 	var interval_id;
@@ -75,8 +75,8 @@ var CONFIG = (function() {
 })();
 
 function getRemainingTime (){
-	var diff_ms = Date.now() - CONFIG.getStartingTime();
-	var remaining_ms = CONFIG.getOriginalCountdown() * MS_IN_MIN - diff_ms;
+	var diff_ms = Date.now() - STATE.getStartingTime();
+	var remaining_ms = STATE.getOriginalCountdown() * MS_IN_MIN - diff_ms;
 
 	if (remaining_ms < 0) {
 		return {
@@ -98,14 +98,14 @@ function getRemainingTime (){
 
 function timerTick() {
 	// We're not supposed to run
-	if (!CONFIG.getIsStarted()) {
+	if (!STATE.getIsStarted()) {
 
 		return;
 	}
 
 	var remaining_time = new getRemainingTime();
 	if ((remaining_time.remaining_minutes == 0) && (remaining_time.remaining_seconds == 0)) {
-		if (CONFIG.shouldPlaySound()) {
+		if (STATE.shouldPlaySound()) {
 			var audio = new Audio('sounds/ding.mp3'); 
 			audio.play(); 
 		}
@@ -142,27 +142,27 @@ function sendContentScriptMessage(message) {
 }
 
 function stopTimer(forced_stop) {
-	if (!CONFIG.getIsStarted()) {
+	if (!STATE.getIsStarted()) {
 
 		return;
 	}
 
-	clearInterval(CONFIG.getIntervalID());
+	clearInterval(STATE.getIntervalID());
 
-	if ((!forced_stop) && (CONFIG.shouldContinueToSmallBreak())){
+	if ((!forced_stop) && (STATE.shouldContinueToSmallBreak())){
 		startTimer("small_break");
 	}
 	else {
-		CONFIG.stop();
+		STATE.stop();
 		browser.browserAction.setBadgeText({text: ""});
 	}
 
-	if (CONFIG.shouldPopup()){
+	if (STATE.shouldPopup()){
 		// TODO: Change overlay.js to popup.js
 		var executingScript = browser.tabs.executeScript(null, {file: "/content_scripts/popup.js"});
 		executingScript.then(
 				function (){
-					var session_type_printable = CONFIG.getOriginalSessionType().toString().replace('_', ' ');
+					var session_type_printable = STATE.getOriginalSessionType().toString().replace('_', ' ');
 					sendContentScriptMessage("The " + session_type_printable + " session has ended.");
 				}, 
 				function (err){
@@ -172,21 +172,21 @@ function stopTimer(forced_stop) {
 }
 
 function startTimer(session_type) {
-	relevant_session = CONFIG.getSession(session_type);
+	relevant_session = STATE.getSession(session_type);
 	browser.browserAction.setBadgeBackgroundColor({color: relevant_session.color});
-	CONFIG.setOriginalSessionType(session_type);
-	CONFIG.setOriginalCountdown(relevant_session.minutes);
-	CONFIG.setStartingTime(Date.now());
-	CONFIG.start();
+	STATE.setOriginalSessionType(session_type);
+	STATE.setOriginalCountdown(relevant_session.minutes);
+	STATE.setStartingTime(Date.now());
+	STATE.start();
 	timerTick();
 	// TODO: Find a better time interval, here in everywhere
-	CONFIG.setIntervalID(setInterval(timerTick, 50));
+	STATE.setIntervalID(setInterval(timerTick, 100));
 }
 
 function handleMessage(request, sender, sendResponse) {
 	switch(request.type) {
 		case "update-config":
-			CONFIG.updateConfig(request.config);
+			STATE.updateConfig(request.config);
 			break;
 		case "start":
 			startTimer(request.session_type);
@@ -198,7 +198,7 @@ function handleMessage(request, sender, sendResponse) {
 			var mins = 0;
 			var secs = 0;
 
-			if (CONFIG.getIsStarted()) {
+			if (STATE.getIsStarted()) {
 				var remaining_time = new getRemainingTime();
 				mins = remaining_time.remaining_minutes;
 				secs = remaining_time.remaining_seconds;
@@ -215,7 +215,7 @@ var gettingTimes = browser.storage.local.get("new_config");
 gettingTimes.then(
 		function (new_config){
 			if (Object.keys(new_config).length !== 0) {
-				CONFIG.updateConfig(new_config["new_config"]);
+				STATE.updateConfig(new_config["new_config"]);
 			}
 		}, 
 		function (error){

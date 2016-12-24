@@ -39,4 +39,4 @@ document.addEventListener("click", (e) => {
 // Getting updates (the time to show the user mostly) from the background JS.
 getUpdate();
 
-setInterval(getUpdate, 100);
+setInterval(getUpdate, 120);
