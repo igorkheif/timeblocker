@@ -17,7 +17,8 @@ var CONFIG = (function() {
 			big_break: {minutes: 30, color: "green"}
 		},
 		should_play_sound: true,
-		should_continue_to_small_break: true
+		should_continue_to_small_break: true,
+		should_popup: true
 	};
 
 	return {
@@ -63,6 +64,9 @@ var CONFIG = (function() {
 		},
 		shouldPlaySound: function() {
 			return config.should_play_sound;
+		},
+		shouldPopup: function() {
+			return config.should_popup;
 		},
 		getSession: function(key){
 			return config.sessions[key];
@@ -113,6 +117,30 @@ function timerTick() {
 	browser.browserAction.setBadgeText({text: remaining_time.remaining_minutes.toString()});
 }
 
+function sendMessageToTabs(tabs, message) {
+	for (let tab of tabs) {
+		browser.tabs.sendMessage(
+				tab.id,
+				{
+					type: "popup", 
+					popup_text: message
+				});
+	};
+}
+
+function sendContentScriptMessage(message) {
+	var querying = browser.tabs.query({
+		currentWindow: true,
+		active: true
+	});
+	querying.then(
+			function (tabs) {
+				sendMessageToTabs(tabs, message);
+			}, 
+			function (error){return;}
+	);
+}
+
 function stopTimer(forced_stop) {
 	if (!CONFIG.getIsStarted()) {
 
@@ -123,11 +151,24 @@ function stopTimer(forced_stop) {
 
 	if ((!forced_stop) && (CONFIG.shouldContinueToSmallBreak())){
 		startTimer("small_break");
-		return;
+	}
+	else {
+		CONFIG.stop();
+		browser.browserAction.setBadgeText({text: ""});
 	}
 
-	CONFIG.stop();
-	browser.browserAction.setBadgeText({text: ""});
+	if (CONFIG.shouldPopup()){
+		// TODO: Change overlay.js to popup.js
+		var executingScript = browser.tabs.executeScript(null, {file: "/content_scripts/popup.js"});
+		executingScript.then(
+				function (){
+					var session_type_printable = CONFIG.getOriginalSessionType().toString().replace('_', ' ');
+					sendContentScriptMessage("The " + session_type_printable + " session has ended.");
+				}, 
+				function (err){
+					return;
+				});
+	}
 }
 
 function startTimer(session_type) {
@@ -165,7 +206,7 @@ function handleMessage(request, sender, sendResponse) {
 
 			sendResponse({minutes : mins, seconds : secs});
 			break;
-		default:	// Should never happen
+		default:	// Message is not for us
 			break;
 	}
 }
@@ -184,7 +225,6 @@ gettingTimes.then(
 browser.runtime.onMessage.addListener(handleMessage);
 
 browser.commands.onCommand.addListener(function(command) {
-	console.log("Got command: " + command);
 	if (command == "stop") {
 		stopTimer(true);
 		return;

@@ -11,11 +11,13 @@
   },
 
   "permissions": [
-	"storage"
+	"storage", 
+	"activeTab",
+	"<all_urls>"
   ],
 
   "background": {
-	  "scripts": ["timer_background.js"]
+	  "scripts": ["background_scripts/timer_background.js"]
   },
 
   "browser_action": {

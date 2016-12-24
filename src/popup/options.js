@@ -5,7 +5,8 @@ var config = {
 		big_break: {minutes: 30, color: "green"}
 	},
 	should_play_sound: true,
-	should_continue_to_small_break: true
+	should_continue_to_small_break: true,
+	should_popup: true
 }
 
 function updateConfigFromHtml() {
@@ -15,6 +16,7 @@ function updateConfigFromHtml() {
 
 		config.should_play_sound = document.getElementById("play_sound").checked;
 		config.should_continue_to_small_break = document.getElementById("autocontinue").checked;
+		config.should_popup = document.getElementById("popup").checked;
 }
 
 function updateHtmlFromConfig() {
@@ -24,8 +26,10 @@ function updateHtmlFromConfig() {
 
 		document.getElementById("play_sound").checked =	config.should_play_sound;
 		document.getElementById("autocontinue").checked = config.should_continue_to_small_break;
+		document.getElementById("popup").checked = config.should_popup;
 }
 
+// Updating both the config and the options page from the given object (probably from storage)
 function updateHtmlAndConfig(conf_obj) {
 	if (Object.keys(conf_obj).length === 0) {
 		return;
@@ -43,11 +47,10 @@ function sendConfigToBackground() {
 }
 
 // We try to get the config from the storage, if it's already saved there. Otherwise, we use the default one here.
-var gettingTimes = browser.storage.local.get("new_config");
-gettingTimes.then(updateHtmlAndConfig, function (error){updateHtmlFromConfig()});
+var gettingConfig = browser.storage.local.get("new_config");
+gettingConfig.then(updateHtmlAndConfig, function (error){updateHtmlFromConfig()});
 
 // When the user submits the options form, we update our config and save it to storage
-
 document.getElementById("options_form").onsubmit=function() {
 	updateConfigFromHtml();
 
