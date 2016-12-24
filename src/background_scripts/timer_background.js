@@ -7,6 +7,7 @@ var CONFIG = (function() {
 	var starting_time;
 	var interval_id;
 	var original_countdown;
+	var original_session_type;
 
 	// TODO: Make this importable instead of a copy of options.js's one.
 	var config = {
@@ -16,6 +17,8 @@ var CONFIG = (function() {
 			big_break: {minutes: 30, color: "green"}
 		},
 		should_play_sound: true,
+		should_continue_to_small_break: true,
+		should_popup: true
 	};
 
 	return {
@@ -46,11 +49,24 @@ var CONFIG = (function() {
 		getOriginalCountdown: function() {
 			return original_countdown;
 		},
+		setOriginalSessionType: function(session_type) {
+			original_session_type = session_type;
+		},
+		getOriginalSessionType: function() {
+			return original_session_type;
+		},
 		updateConfig: function(new_config) {
 			config = new_config;
 		},
+		shouldContinueToSmallBreak: function() {
+			return ((config.should_continue_to_small_break) && 
+				(original_session_type == "work"));
+		},
 		shouldPlaySound: function() {
 			return config.should_play_sound;
+		},
+		shouldPopup: function() {
+			return config.should_popup;
 		},
 		getSession: function(key){
 			return config.sessions[key];
@@ -94,26 +110,71 @@ function timerTick() {
 			audio.play(); 
 		}
 
-		stopTimer();
+		stopTimer(false);
 		return;
 	}
 
 	browser.browserAction.setBadgeText({text: remaining_time.remaining_minutes.toString()});
 }
 
-function stopTimer() {
+function sendMessageToTabs(tabs, message) {
+	for (let tab of tabs) {
+		browser.tabs.sendMessage(
+				tab.id,
+				{
+					type: "popup", 
+					popup_text: message
+				});
+	};
+}
+
+function sendContentScriptMessage(message) {
+	var querying = browser.tabs.query({
+		currentWindow: true,
+		active: true
+	});
+	querying.then(
+			function (tabs) {
+				sendMessageToTabs(tabs, message);
+			}, 
+			function (error){return;}
+	);
+}
+
+function stopTimer(forced_stop) {
 	if (!CONFIG.getIsStarted()) {
 
 		return;
 	}
+
 	clearInterval(CONFIG.getIntervalID());
-	CONFIG.stop();
-	browser.browserAction.setBadgeText({text: ""});
+
+	if ((!forced_stop) && (CONFIG.shouldContinueToSmallBreak())){
+		startTimer("small_break");
+	}
+	else {
+		CONFIG.stop();
+		browser.browserAction.setBadgeText({text: ""});
+	}
+
+	if (CONFIG.shouldPopup()){
+		// TODO: Change overlay.js to popup.js
+		var executingScript = browser.tabs.executeScript(null, {file: "/content_scripts/popup.js"});
+		executingScript.then(
+				function (){
+					var session_type_printable = CONFIG.getOriginalSessionType().toString().replace('_', ' ');
+					sendContentScriptMessage("The " + session_type_printable + " session has ended.");
+				}, 
+				function (err){
+					return;
+				});
+	}
 }
 
 function startTimer(session_type) {
 	relevant_session = CONFIG.getSession(session_type);
 	browser.browserAction.setBadgeBackgroundColor({color: relevant_session.color});
+	CONFIG.setOriginalSessionType(session_type);
 	CONFIG.setOriginalCountdown(relevant_session.minutes);
 	CONFIG.setStartingTime(Date.now());
 	CONFIG.start();
@@ -131,7 +192,7 @@ function handleMessage(request, sender, sendResponse) {
 			startTimer(request.session_type);
 			break;
 		case "stop":
-			stopTimer();
+			stopTimer(true);
 			break;
 		case "update-request":
 			var mins = 0;
@@ -145,7 +206,7 @@ function handleMessage(request, sender, sendResponse) {
 
 			sendResponse({minutes : mins, seconds : secs});
 			break;
-		default:	// Should never happen
+		default:	// Message is not for us
 			break;
 	}
 }
@@ -164,9 +225,8 @@ gettingTimes.then(
 browser.runtime.onMessage.addListener(handleMessage);
 
 browser.commands.onCommand.addListener(function(command) {
-	console.log("Got command: " + command);
 	if (command == "stop") {
-		stopTimer();
+		stopTimer(true);
 		return;
 	}
 
