@@ -147,6 +147,18 @@ function stopTimer(forced_stop) {
 		return;
 	}
 
+	if (STATE.shouldPopup()){
+		var session_type_printable = STATE.getOriginalSessionType().toString().replace('_', ' ');
+		var executingScript = browser.tabs.executeScript(null, {file: "/content_scripts/popup.js"});
+		executingScript.then(
+				function (){
+					sendContentScriptMessage("The " + session_type_printable + " session has ended.");
+				}, 
+				function (err){
+					return;
+				});
+	}
+
 	clearInterval(STATE.getIntervalID());
 
 	if ((!forced_stop) && (STATE.shouldContinueToSmallBreak())){
@@ -157,18 +169,6 @@ function stopTimer(forced_stop) {
 		browser.browserAction.setBadgeText({text: ""});
 	}
 
-	if (STATE.shouldPopup()){
-		// TODO: Change overlay.js to popup.js
-		var executingScript = browser.tabs.executeScript(null, {file: "/content_scripts/popup.js"});
-		executingScript.then(
-				function (){
-					var session_type_printable = STATE.getOriginalSessionType().toString().replace('_', ' ');
-					sendContentScriptMessage("The " + session_type_printable + " session has ended.");
-				}, 
-				function (err){
-					return;
-				});
-	}
 }
 
 function startTimer(session_type) {
