@@ -1,3 +1,4 @@
+console.log("1");
 const MS_IN_SEC = 1000;
 const MS_IN_MIN = 60000;
 const SEC_IN_MIN = 60;
@@ -17,7 +18,8 @@ var CONFIG = (function() {
 			big_break: {minutes: 30, color: "green"}
 		},
 		should_play_sound: true,
-		should_continue_to_small_break: true
+		should_continue_to_small_break: true,
+		should_popup: true
 	};
 
 	return {
@@ -64,8 +66,14 @@ var CONFIG = (function() {
 		shouldPlaySound: function() {
 			return config.should_play_sound;
 		},
+		shouldPopup: function() {
+			return config.should_popup;
+		},
 		getSession: function(key){
 			return config.sessions[key];
+		},
+		getSessionType: function(){
+			return session_type;
 		}
 	};
 })();
@@ -120,19 +128,16 @@ function sendMessageToTabs(tabs) {
 				{
 					type: "overlay", 
 					overlay_text: "Hi from background script"
-				}
-				).then(response => {
-			console.log("Message from the content script:");
-			console.log(response.response);
-		}).catch(onError);
-	}
+				});
+	};
 }
 
 function sendContentScriptMessage(message) {
-	browser.tabs.query({
+	var querying = browser.tabs.query({
 		currentWindow: true,
 		active: true
-	}).then(sendMessageToTabs).catch(onError);
+	});
+	querying.then(sendMessageToTabs, function (error){return;});
 }
 
 function stopTimer(forced_stop) {
@@ -145,29 +150,24 @@ function stopTimer(forced_stop) {
 
 	if ((!forced_stop) && (CONFIG.shouldContinueToSmallBreak())){
 		startTimer("small_break");
-		return;
+	}
+	else {
+		CONFIG.stop();
+		browser.browserAction.setBadgeText({text: ""});
 	}
 
-	CONFIG.stop();
-
-	
-	browser.browserAction.setBadgeText({text: ""});
-
-	console.log("getting current tab");
-	//var executing = browser.tabs.executeScript(null, { file: "/overlay.js" });
-	var executing = browser.tabs.executeScript(null, {file: "/content_scripts/overlay.js"});
-	executing.then(
-			function (res){
-				console.log("started overlay.js: " + res);
-				console.log("sending message");
-
-
-				sendContentScriptMessage("SUUUUUUUUUUUP");
-
-				console.log("done");
-			}, function (err){
-				console.log("haven't started, error: " + err);
-			});
+	if (CONFIG.shouldPopup()){
+		// TODO: Change overlay.js to popup.js
+		var executing = browser.tabs.executeScript(null, {file: "/content_scripts/overlay.js"});
+		executing.then(
+				var session_type_printable = CONFIG.getSessionType().toString().replace('_', ' ');
+				function (){
+					sendContentScriptMessage("The " + session_type_printable + " session has ended.");
+				}, 
+				function (err){
+					return;
+				});
+	}
 }
 
 function startTimer(session_type) {
