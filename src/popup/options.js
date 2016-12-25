@@ -1,6 +1,6 @@
 var config = {
 	sessions: {
-		work: {minutes: 25, color: "maroon"},
+		time_block: {minutes: 25, color: "maroon"},
 		small_break: {minutes: 0.05, color: "royalblue"},
 		big_break: {minutes: 30, color: "green"}
 	},
@@ -9,6 +9,7 @@ var config = {
 	should_popup: true
 }
 
+// Updating the current config from the html page
 function updateConfigFromHtml() {
 		for (key in config.sessions){
 			config.sessions[key].minutes = document.getElementById(key).value;
@@ -19,6 +20,7 @@ function updateConfigFromHtml() {
 		config.should_popup = document.getElementById("popup").checked;
 }
 
+// Updating the html page from the config
 function updateHtmlFromConfig() {
 		for (key in config.sessions){
 			document.getElementById(key).value = config.sessions[key].minutes;
@@ -39,6 +41,7 @@ function updateHtmlAndConfig(conf_obj) {
 	updateHtmlFromConfig();
 }
 
+// Sending config to the background script
 function sendConfigToBackground() {
 	browser.runtime.sendMessage({
 		type: "update-config",

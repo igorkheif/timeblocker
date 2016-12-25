@@ -1,24 +1,76 @@
 <!DOCTYPE html>
 
 <html>
-	<head>
-		<meta charset="utf-8">
-		<link rel="stylesheet" href="timer_control.css"/>
-	</head>
 
-	<body>
-		<table style="width: inherit;">
-			<tr>
-				<td id="clock">00:00</td>
-			</tr>
-			<div class="countdown">Work</div>
-			<div class="countdown">Small Break</div>
-			<div class="countdown">Big Break</div>
-			<div class="stop">Stop</div>
-		</table>
-			<script src="timer_control.js"></script>
-			<a href="options.html">options</a>
-	</body>
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="timer_control.css" />
+  </head>
+
+  <body>
+
+    <table style="width: inherit;">
+      <tr>
+        <td id="clock" class="clock">00:00</td>
+      </tr>
+    </table>
+
+
+    <div class="btn btn-block" id="time-block-button">
+      <table align="center">
+        <tr>
+          <td>Time Block</td>
+        </tr>
+        <tr>
+          <td style="font-size:0.33em">(Alt + Shift + W)</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="btn btn-small_break" id="small-break-button">
+      <table align="center">
+        <tr>
+          <td>Small Break</td>
+        </tr>
+        <tr>
+          <td style="font-size:0.33em">(Alt + Shift + V)</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="btn btn-big_break" id="big-break-button">
+      <table align="center">
+        <tr>
+          <td>Big Break</td>
+        </tr>
+        <tr>
+          <td style="font-size:0.33em">(Alt + Shift + B)</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="btn btn-stop" id="stop-button">
+      <table align="center">
+        <tr>
+          <td>Stop</td>
+        </tr>
+        <tr>
+          <td style="font-size:0.33em">(Alt + Shift + S)</td>
+        </tr>
+      </table>
+    </div>
+
+    <div style="margin-top: 4em"> </div>
+    
+    <a href="options.html" style="text-decoration: none">
+      <div class="btn btn-options">
+        Options
+      </div>
+    </a>
+
+    <script src="timer_control.js"></script>
+  </body>
 
 
 </html>
+

@@ -1,7 +1,4 @@
-const WORK_KEY = "work";
-const SMALL_BREAK_KEY = "small_break";
-const BIG_BREAK_KEY = "big_break";
-
+// Adds a "0" to a digit so it'll look prettier if it's a single digit
 function indentTime(i) {
 	if (i < 10) {
 		i = "0" + i
@@ -9,10 +6,12 @@ function indentTime(i) {
 	return i;
 }
 
+// Prints the newly acquired time left from the background script 
 function processUpdate(update){
 	document.getElementById('clock').innerHTML = indentTime(update.minutes) + ":" + indentTime(update.seconds);
 }
 
+// Requests an update from the background script to display to the user
 function getUpdate(){
 
 	var sending = browser.runtime.sendMessage({
@@ -22,21 +21,37 @@ function getUpdate(){
 	sending.then(processUpdate, function (error){return;});  
 }
 
-document.addEventListener("click", (e) => {
-	if (e.target.classList.contains("countdown")) {
-		var chosen_countdown = e.target.textContent.toLowerCase().replace(" ", "_");
+function sendGenericTimerStart(chosen_countdown){
 		browser.runtime.sendMessage({
 			type: "start",
 			session_type: chosen_countdown
 		});
-	} else if (e.target.classList.contains("stop")) {
+}
+
+function sendTimeBlock(){
+	sendGenericTimerStart("time_block");
+}
+
+function sendSmallBreak(){
+	sendGenericTimerStart("small_break");
+}
+
+function sendBigBreak(){
+	sendGenericTimerStart("big_break");
+}
+
+function sendStop(){
 		browser.runtime.sendMessage({
 			type: "stop"
 		});
-	}
-});
+}
+// Processes the button clicks of the user
+document.getElementById("time-block-button").addEventListener("click", sendTimeBlock);
+document.getElementById("small-break-button").addEventListener("click", sendSmallBreak);
+document.getElementById("big-break-button").addEventListener("click", sendBigBreak);
+document.getElementById("stop-button").addEventListener("click", sendStop);
 
-// Getting updates (the time to show the user mostly) from the background JS.
+// Getting updates (the time to show the user) from the background JS.
 getUpdate();
 
-setInterval(getUpdate, 100);
+setInterval(getUpdate, 120);

@@ -1,30 +1,91 @@
 <!DOCTYPE html>
 
 <html>
-	<head>
-		<meta charset="utf-8">
-		<link rel="stylesheet" href="timer_control.css"/>
-	</head>
 
-	<body>
-		<table style="width: inherit;">
-			<form id="options_form" method="POST">
-				Work Minutes:<br /><input type="text" id="work" value="25" />
-				Small Break Minutes<br /><input type="text" id="small_break" value="5" />
-				Big Break Minutes<br /><input type="text" id="big_break" value="30" />
-				Should Play Sound<br /><input type="checkbox" id="play_sound" checked />
-				Should Continue To Small Break<br /><input type="checkbox" id="autocontinue" checked />
-				Should Create a Popup Message Upon Completion<br /><input type="checkbox" id="popup" checked />
-				<br />
-				<br />
-				<input type="submit" value="Update" />
-			</form>
-		</table>
-		<br />
-		<br />
-		<script src="options.js"></script> 
-		<a href="timer_control.html">back</a>
-	</body>
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="options.css" />
+  </head>
+
+  <body style="width: 25em;">
+    <table style="width: inherit;">
+      <form id="options_form" method="POST">
+        <table style="width:100%">
+          <tr>
+            <td>
+              Time Block Minutes:
+            </td>
+            <td>
+              <input type="text" id="time_block" value="25" style="width:2em;" />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              Small Break Minutes:
+            </td>
+            <td>
+              <input type="text" id="small_break" value="5" style="width:2em;" />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              Big Break Minutes:
+            </td>
+            <td>
+              <input type="text" id="big_break" value="30" style="width:2em;" />
+              <br />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              Play Sound On Finish:
+            </td>
+            <td>
+              <input type="checkbox" id="play_sound" checked />
+              <br />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              Continue To Small Break After A Block:
+            </td>
+            <td>
+              <input type="checkbox" id="autocontinue" checked />
+              <br />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              Create a Popup Message On Finish:
+            </td>
+            <td>
+              <input type="checkbox" id="popup" checked />
+              <br />
+            </td>
+          </tr>
+        </table>
+        <br />
+        <br />
+        <br />
+        
+        <button name="Update" id="mysubmitbutton" type="submit" class="btn btn-submit">
+          Update
+        </button>
+      </form>
+        
+        <a href="timer_control.html">
+          <button class="btn">Back</button>
+        </a>
+        
+        <!--<input type="submit" value="Update" />-->
+
+    </table>
+    <br />
+    <br />
+    <script src="options.js"></script>
+
+  </body>
 
 
 </html>
+

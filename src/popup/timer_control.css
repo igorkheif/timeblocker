@@ -1,29 +1,71 @@
-html, body {
-  width: 200px;
+html,
+body {
+  width: 15em;
 }
 
-.countdown {
+.btn {
   margin: 3% auto;
-  padding: 4px;
   text-align: center;
-  font-size: 1.5em;
-  background-color: #E5F2F2;
   cursor: pointer;
+  border-radius: 0.2em;
+  font-family: Arial;
+  color: #f4f4f4;
+  font-size: 1.938em;
+  background: #d9534f;
+  padding: 0.25em 0.64em 0.25em 0.64em;
+  text-decoration: none;
 }
 
-.countdown:hover {
-  background-color: #CFF2F2;
+.btn-block {
+  background: #d9534f;
 }
 
-.stop {
-  margin: 3% auto;
-  padding: 4px;
+.btn-block:hover {
+  background: #c9302c;
+  text-decoration: none;
+}
+
+.btn-small_break {
+  background: #337ab7;
+}
+
+.btn-small_break:hover {
+  background: #265c8a;
+  text-decoration: none;
+}
+
+.btn-big_break {
+  background: #5cb85c;
+}
+
+.btn-big_break:hover {
+  background: #3c8b3c;
+  text-decoration: none;
+}
+
+.btn-stop {
+  color: #585859;
+  background: #e0e0e0;
+}
+
+.btn-stop:hover {
+  background: #bcbcbc;
+  text-decoration: none;
+}
+
+.btn-options {
+  color: #456a80;
+  background: #dedfff;
+}
+
+.btn-options:hover {
+  background: #b8baff;
+}
+
+.clock {
   text-align: center;
-  font-size: 1.5em;
-  background-color: #E5F2F2;
-  cursor: pointer;
+  font-size: 3.5em;
+  padding-top: 0.2em;
+  padding-bottom: 0.2em;
 }
 
-.stop:hover {
-  background-color: #CFF2F2;
-}
