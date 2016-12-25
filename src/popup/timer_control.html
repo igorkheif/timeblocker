@@ -1,24 +1,33 @@
 <!DOCTYPE html>
 
 <html>
-	<head>
-		<meta charset="utf-8">
-		<link rel="stylesheet" href="timer_control.css"/>
-	</head>
 
-	<body>
-		<table style="width: inherit;">
-			<tr>
-				<td id="clock">00:00</td>
-			</tr>
-			<div class="countdown">Work</div>
-			<div class="countdown">Small Break</div>
-			<div class="countdown">Big Break</div>
-			<div class="stop">Stop</div>
-		</table>
-			<script src="timer_control.js"></script>
-			<a href="options.html">options</a>
-	</body>
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="timer_control.css" />
+  </head>
+
+  <body>
+
+    <table style="width: inherit;">
+      <tr>
+        <td id="clock" class="clock">00:00</td>
+      </tr>
+    </table>
+    <table style="width: inherit;">
+      <tr>
+        <div class="btn btn-session">Work</div>
+        <div class="btn btn-small_break">Small Break</div>
+        <div class="btn btn-big_break">Big Break</div>
+        <div class="btn btn-stop">Stop</div>
+        <a href="options.html" style="text-decoration: none">
+          <div class="btn btn-options">Options</div>
+        </a>
+      </tr>
+    </table>
+    <script src="timer_control.js"></script>
+  </body>
 
 
 </html>
+

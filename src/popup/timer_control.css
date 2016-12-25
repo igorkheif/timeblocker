@@ -1,29 +1,77 @@
-html, body {
-  width: 200px;
+html,
+body {
+  width: 220px;
 }
 
-.countdown {
+.basic {}
+
+.btn {
   margin: 3% auto;
-  padding: 4px;
   text-align: center;
   font-size: 1.5em;
-  background-color: #E5F2F2;
   cursor: pointer;
+  -webkit-border-radius: 8;
+  -moz-border-radius: 8;
+  border-radius: 0.2em;
+  font-family: Arial;
+  color: #ffffff;
+  font-size: 1.938em;
+  background: #d9534f;
+  padding: 0.32em 0.64em 0.32em 0.64em;
+  text-decoration: none;
 }
 
-.countdown:hover {
-  background-color: #CFF2F2;
+.btn-session {
+  background: #d9534f;
 }
 
-.stop {
-  margin: 3% auto;
-  padding: 4px;
+.btn-session:hover {
+  background: #c9302c;
+  text-decoration: none;
+}
+
+.btn-small_break {
+  background: #337ab7;
+}
+
+.btn-small_break:hover {
+  background: #265c8a;
+  text-decoration: none;
+}
+
+.btn-big_break {
+  background: #5cb85c;
+}
+
+.btn-big_break:hover {
+  background: #3c8b3c;
+  text-decoration: none;
+}
+
+.btn-stop {
+  color: #686868;
+  background: #e0e0e0;
+}
+
+.btn-stop:hover {
+  background: #bcbcbc;
+  text-decoration: none;
+}
+
+.btn-options {
+  margin-top: 1.8em;
+  color: #456a80;
+  background: #dedfff;
+}
+
+.btn-options:hover {
+  background: #b8baff;
+}
+
+.clock {
   text-align: center;
-  font-size: 1.5em;
-  background-color: #E5F2F2;
-  cursor: pointer;
+  font-size: 3.5em;
+  padding-top: 0.2em;
+  padding-bottom: 0.2em;
 }
 
-.stop:hover {
-  background-color: #CFF2F2;
-}
