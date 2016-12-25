@@ -1,6 +1,6 @@
 html,
 body {
-  width: 220px;
+  width: 15em;
 }
 
 .basic {}
@@ -10,16 +10,15 @@ body {
   text-align: center;
   font-size: 1.5em;
   cursor: pointer;
-  -webkit-border-radius: 8;
-  -moz-border-radius: 8;
   border-radius: 0.2em;
   font-family: Arial;
   color: #ffffff;
   font-size: 1.938em;
   background: #d9534f;
-  padding: 0.32em 0.64em 0.32em 0.64em;
+  padding: 0.25em 0.64em 0.25em 0.64em;
   text-decoration: none;
 }
+
 
 .btn-session {
   background: #d9534f;
@@ -49,7 +48,7 @@ body {
 }
 
 .btn-stop {
-  color: #686868;
+  color: #585859;
   background: #e0e0e0;
 }
 
@@ -59,7 +58,7 @@ body {
 }
 
 .btn-options {
-  margin-top: 1.8em;
+  margin-top: 2em;
   color: #456a80;
   background: #dedfff;
 }
