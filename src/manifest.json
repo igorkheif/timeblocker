@@ -24,7 +24,7 @@
 
   "browser_action": {
     "default_icon": "icons/TimeBlocker32.png",
-    "default_title": "Work Timer",
+    "default_title": "Time Blocker",
     "default_popup": "popup/timer_control.html"
   },
 
