@@ -1,0 +1,29 @@
+.basic {}
+
+.btn {
+  width: 6.2em;
+  border-radius: 0.2em;
+  font-family: Arial;
+  color: #456a80;
+  font-size: 1.938em;
+  background: #dedfff;
+  padding: 0.25em 0.64em 0.25em 0.64em;
+  border: solid #1f628d 0.07em;
+  text-decoration: none;
+}
+
+.btn:hover {
+  background: #b8baff;
+  text-decoration: none;
+}
+
+.btn-submit {
+  color: #339c53;
+  background: #e0ffe7;
+  border: solid #339c53 0.07em;
+}
+
+.btn-submit:hover {
+  background: #baffc4;
+}
+
