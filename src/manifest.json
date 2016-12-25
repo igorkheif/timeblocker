@@ -1,9 +1,9 @@
 {
   "manifest_version": 2,
-  "name": "Work Timer",
+  "name": "Time Blocker",
   "version": "0.1",
 
-  "description": "A simple work timer",
+  "description": "A timer for working with the time blocking technique.",
 
   "icons": {
     "24": "icons/TimeBlocker24.png",
