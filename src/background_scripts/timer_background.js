@@ -12,14 +12,14 @@ var STATE = (function() {
 	var interval_id;
 	// The original amount of time we're counting down from
 	var original_countdown;
-	// The current session type as a string (work, small_break or big_break)
+	// The current session type as a string (time_block, small_break or big_break)
 	var original_session_type;
 
 	// The config. Holds the user defined things (mostly) such as times for different blocks
 	// and whether or not show a popup/play sound upon completion
 	var config = {
 		sessions: {
-			work: {minutes: 25, color: "maroon"},
+			time_block: {minutes: 25, color: "maroon"},
 			small_break: {minutes: 0.05, color: "royalblue"},
 			big_break: {minutes: 30, color: "green"}
 		},
@@ -68,7 +68,7 @@ var STATE = (function() {
 		},
 		shouldContinueToSmallBreak: function() {
 			return ((config.should_continue_to_small_break) && 
-				(original_session_type == "work"));
+				(original_session_type == "time_block"));
 		},
 		shouldPlaySound: function() {
 			return config.should_play_sound;

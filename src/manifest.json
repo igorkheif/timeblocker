@@ -27,7 +27,7 @@
   },
 
   "commands": {
-	  "work": {
+	  "time_block": {
 		  "suggested_key": {
 			  "default": "Alt+Shift+W"
 		  },

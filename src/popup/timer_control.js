@@ -21,20 +21,35 @@ function getUpdate(){
 	sending.then(processUpdate, function (error){return;});  
 }
 
-// Processes the button clicks of the user
-document.addEventListener("click", (e) => {
-	if (e.target.classList.contains("countdown")) {
-		var chosen_countdown = e.target.textContent.toLowerCase().replace(" ", "_");
+function sendGenericTimerStart(chosen_countdown){
 		browser.runtime.sendMessage({
 			type: "start",
 			session_type: chosen_countdown
 		});
-	} else if (e.target.classList.contains("stop")) {
+}
+
+function sendTimeBlock(){
+	sendGenericTimerStart("time_block");
+}
+
+function sendSmallBreak(){
+	sendGenericTimerStart("small_break");
+}
+
+function sendBigBreak(){
+	sendGenericTimerStart("big_break");
+}
+
+function sendStop(){
 		browser.runtime.sendMessage({
 			type: "stop"
 		});
-	}
-});
+}
+// Processes the button clicks of the user
+document.getElementById("time-block-button").addEventListener("click", sendTimeBlock);
+document.getElementById("small-break-button").addEventListener("click", sendSmallBreak);
+document.getElementById("big-break-button").addEventListener("click", sendBigBreak);
+document.getElementById("stop-button").addEventListener("click", sendStop);
 
 // Getting updates (the time to show the user) from the background JS.
 getUpdate();

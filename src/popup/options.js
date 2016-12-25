@@ -1,6 +1,6 @@
 var config = {
 	sessions: {
-		work: {minutes: 25, color: "maroon"},
+		time_block: {minutes: 25, color: "maroon"},
 		small_break: {minutes: 0.05, color: "royalblue"},
 		big_break: {minutes: 30, color: "green"}
 	},
