@@ -6,8 +6,10 @@
   "description": "A simple work timer",
 
   "icons": {
-    "48": "icons/WorkTimer48.png",
-    "96": "icons/WorkTimer96.png"
+    "24": "icons/TimeBlocker24.png",
+    "32": "icons/TimeBlocker32.png",
+    "48": "icons/TimeBlocker48.png",
+    "96": "icons/TimeBlocker96.png"
   },
 
   "permissions": [
@@ -21,7 +23,7 @@
   },
 
   "browser_action": {
-    "default_icon": "icons/WorkTimer32.png",
+    "default_icon": "icons/TimeBlocker32.png",
     "default_title": "Work Timer",
     "default_popup": "popup/timer_control.html"
   },
