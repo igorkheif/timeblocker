@@ -12,13 +12,12 @@ body {
   cursor: pointer;
   border-radius: 0.2em;
   font-family: Arial;
-  color: #ffffff;
+  color: #f4f4f4;
   font-size: 1.938em;
   background: #d9534f;
   padding: 0.25em 0.64em 0.25em 0.64em;
   text-decoration: none;
 }
-
 
 .btn-session {
   background: #d9534f;
@@ -58,7 +57,6 @@ body {
 }
 
 .btn-options {
-  margin-top: 2em;
   color: #456a80;
   background: #dedfff;
 }
