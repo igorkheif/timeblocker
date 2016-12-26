@@ -125,14 +125,14 @@ function timerTick() {
 		return;
 	}
 
-	browser.browserAction.setBadgeText({text: remaining_time.remaining_minutes.toString()});
+	chrome.browserAction.setBadgeText({text: remaining_time.remaining_minutes.toString()});
 }
 
 // Part of the process of sending the message to the popup script
 function sendMessageToTabs(tabs, message) {
 	// Going over the found active tabs and sending them the message
 	for (let tab of tabs) {
-		browser.tabs.sendMessage(
+		chrome.tabs.sendMessage(
 				tab.id,
 				{
 					type: "popup", 
@@ -144,7 +144,7 @@ function sendMessageToTabs(tabs, message) {
 // Part of the process of sending the message to the popup script
 function sendContentScriptMessage(message) {
 	// Getting the active tab for the popup
-	var querying = browser.tabs.query({
+	var querying = chrome.tabs.query({
 		currentWindow: true,
 		active: true
 	});
@@ -166,7 +166,7 @@ function stopTimer(is_forced_stop) {
 	// we're starting the popup.js script and sending it a message with the text to print
 	if ((STATE.shouldPopup()) && (!is_forced_stop)){
 		var session_type_printable = STATE.getOriginalSessionType().toString().replace('_', ' ');
-		var executingScript = browser.tabs.executeScript(null, {file: "/content_scripts/popup.js"});
+		var executingScript = chrome.tabs.executeScript(null, {file: "/content_scripts/popup.js"});
 		executingScript.then(
 				function (){
 					sendContentScriptMessage("The " + session_type_printable + " session has ended.");
@@ -185,7 +185,7 @@ function stopTimer(is_forced_stop) {
 	}
 	else {
 		STATE.stop();
-		browser.browserAction.setBadgeText({text: ""});
+		chrome.browserAction.setBadgeText({text: ""});
 	}
 
 }
@@ -193,7 +193,7 @@ function stopTimer(is_forced_stop) {
 function startTimer(session_type) {
 	// Saving many things in the state, setting the badge's color
 	relevant_session = STATE.getSession(session_type);
-	browser.browserAction.setBadgeBackgroundColor({color: relevant_session.color});
+	chrome.browserAction.setBadgeBackgroundColor({color: relevant_session.color});
 	STATE.setOriginalSessionType(session_type);
 	STATE.setOriginalCountdown(relevant_session.minutes);
 	STATE.setStartingTime(Date.now());
@@ -236,7 +236,7 @@ function handleMessage(request, sender, sendResponse) {
 }
 
 // Trying to get the configuration from the storage. If it's there, good, if not, we'll use the default.
-var gettingTimes = browser.storage.local.get("new_config"); 
+var gettingTimes = chrome.storage.local.get("new_config"); 
 gettingTimes.then(
 		function (new_config){
 			if (Object.keys(new_config).length !== 0) {
@@ -247,11 +247,11 @@ gettingTimes.then(
 			return;
 		});
 
-browser.runtime.onMessage.addListener(handleMessage);
+chrome.runtime.onMessage.addListener(handleMessage);
 
 // If the user sends a command using the keyboard (more on that in the manifest file under commands)
 // we either stop the timer, or start it with the requested preset
-browser.commands.onCommand.addListener(function(command) {
+chrome.commands.onCommand.addListener(function(command) {
 	if (command == "stop") {
 		stopTimer(true);
 		return;

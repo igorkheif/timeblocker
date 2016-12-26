@@ -14,7 +14,7 @@ function processUpdate(update){
 // Requests an update from the background script to display to the user
 function getUpdate(){
 
-	var sending = browser.runtime.sendMessage({
+	var sending = chrome.runtime.sendMessage({
 		type: "update-request"
 	});
 
@@ -22,7 +22,7 @@ function getUpdate(){
 }
 
 function sendGenericTimerStart(chosen_countdown){
-		browser.runtime.sendMessage({
+		chrome.runtime.sendMessage({
 			type: "start",
 			session_type: chosen_countdown
 		});
@@ -41,7 +41,7 @@ function sendBigBreak(){
 }
 
 function sendStop(){
-		browser.runtime.sendMessage({
+		chrome.runtime.sendMessage({
 			type: "stop"
 		});
 }
