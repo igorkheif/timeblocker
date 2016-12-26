@@ -8,6 +8,11 @@ function indentTime(i) {
 
 // Prints the newly acquired time left from the background script 
 function processUpdate(update){
+	if (chrome.runtime.lastError) {
+		console.warn("Problems with getting an update");
+		return;
+	}
+
 	document.getElementById('clock').innerHTML = indentTime(update.minutes) + ":" + indentTime(update.seconds);
 }
 
@@ -16,9 +21,7 @@ function getUpdate(){
 
 	var sending = chrome.runtime.sendMessage({
 		type: "update-request"
-	});
-
-	sending.then(processUpdate, function (error){return;});  
+	}, processUpdate);
 }
 
 function sendGenericTimerStart(chosen_countdown){

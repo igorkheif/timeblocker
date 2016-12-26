@@ -50,8 +50,16 @@ function sendConfigToBackground() {
 }
 
 // We try to get the config from the storage, if it's already saved there. Otherwise, we use the default one here.
-var gettingConfig = chrome.storage.local.get("new_config");
-gettingConfig.then(updateHtmlAndConfig, function (error){updateHtmlFromConfig()});
+var gettingConfig = chrome.storage.local.get("new_config", 
+		function (conf_obj){
+
+			if (chrome.runtime.lastError) {
+				updateHtmlFromConfig();
+				return;
+			}
+
+			updateHtmlAndConfig(conf_obj);
+		});
 
 // When the user submits the options form, we update our config and save it to storage
 document.getElementById("options_form").onsubmit=function() {

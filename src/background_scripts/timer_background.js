@@ -147,13 +147,15 @@ function sendContentScriptMessage(message) {
 	var querying = chrome.tabs.query({
 		currentWindow: true,
 		active: true
+	},
+	function (tabs) {
+		if (chrome.runtime.lastError) {
+			console.warn("Couldn't get tabs from query function");
+			return;
+		}
+
+		sendMessageToTabs(tabs, message);
 	});
-	querying.then(
-			function (tabs) {
-				sendMessageToTabs(tabs, message);
-			}, 
-			function (error){return;}
-	);
 }
 
 function stopTimer(is_forced_stop) {
@@ -166,13 +168,15 @@ function stopTimer(is_forced_stop) {
 	// we're starting the popup.js script and sending it a message with the text to print
 	if ((STATE.shouldPopup()) && (!is_forced_stop)){
 		var session_type_printable = STATE.getOriginalSessionType().toString().replace('_', ' ');
-		var executingScript = chrome.tabs.executeScript(null, {file: "/content_scripts/popup.js"});
-		executingScript.then(
-				function (){
+		var executingScript = chrome.tabs.executeScript(null, {file: "/content_scripts/popup.js"},
+				function () {
+
+					if (chrome.runtime.lastError) {
+						console.warn("Couldn't run the content script");
+						return;
+					}
+
 					sendContentScriptMessage("The " + session_type_printable + " session has ended.");
-				}, 
-				function (err){
-					return;
 				});
 	}
 
@@ -236,15 +240,16 @@ function handleMessage(request, sender, sendResponse) {
 }
 
 // Trying to get the configuration from the storage. If it's there, good, if not, we'll use the default.
-var gettingTimes = chrome.storage.local.get("new_config"); 
-gettingTimes.then(
+var gettingTimes = chrome.storage.local.get("new_config", 
 		function (new_config){
+			if (chrome.runtime.lastError) {
+				console.log("Couldn't get config from storage");
+				return;
+			}
+
 			if (Object.keys(new_config).length !== 0) {
 				STATE.updateConfig(new_config["new_config"]);
 			}
-		}, 
-		function (error){
-			return;
 		});
 
 chrome.runtime.onMessage.addListener(handleMessage);
