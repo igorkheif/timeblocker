@@ -117,7 +117,7 @@ function timerTick() {
 	if ((remaining_time.remaining_minutes == 0) && (remaining_time.remaining_seconds == 0)) {
 		// TODO: Move this one to stopTimer, but it's fine here and it works (even simplifies the code)
 		if (STATE.shouldPlaySound()) {
-			var audio = new Audio('sounds/ding.mp3'); 
+			var audio = new Audio('../sounds/ding.mp3'); 
 			audio.play(); 
 		}
 

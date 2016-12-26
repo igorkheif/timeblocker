@@ -31,25 +31,25 @@
   "commands": {
 	  "time_block": {
 		  "suggested_key": {
-			  "default": "Alt+Shift+W"
+			  "default": "Alt+Q"
 		  },
-		  "description": "Starts a work session"
+		  "description": "Starts a time block session"
 	  },
 	  "small_break": {
 		  "suggested_key": {
-			  "default": "Alt+Shift+V"
+			  "default": "Alt+V"
 		  },
 		  "description": "Starts a small break session"
 	  },
 	  "big_break": {
 		  "suggested_key": {
-			  "default": "Alt+Shift+B"
+			  "default": "Alt+B"
 		  },
 		  "description": "Starts a big break session"
 	  },
 	  "stop": {
 		  "suggested_key": {
-			  "default": "Alt+Shift+S"
+			  "default": "Alt+S"
 		  },
 		  "description": "Stops the current session"
 	  }
