@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Time Blocker",
-  "version": "0.9",
+  "version": "0.9.0.1",
 
   "description": "A timer for working with the time blocking technique.",
 
