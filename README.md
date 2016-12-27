@@ -15,3 +15,8 @@ Main features:
 * A badge on the icon of the add-on indicating the minutes left for the session, so you don't have to open the add-on to know the time left.
 
 * The ability to continue from the Time Block session to the Small Break session.
+
+
+### Chrome add-on link: https://goo.gl/UQ3YqJ
+
+### Firefox add-on link: Comming soon!
